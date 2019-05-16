@@ -1,7 +1,26 @@
-FROM adamrehn/ue4-full:4.21.2-opengl
+FROM adamrehn/ue4-full:4.21.2-cudagl10.0
+
+# Ensure we are using a UTF-8 locale, as per the official TensorFlow Dockerfiles
+ENV LANG C.UTF-8
+
+# Install the TensorFlow dependencies not provided by the base image
+# (Adapted from <https://github.com/tensorflow/tensorflow/blob/v1.13.1/tensorflow/tools/dockerfiles/dockerfiles/gpu.Dockerfile>)
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	libcudnn7=7.4.1.5-1+cuda10.0 \
+	libfreetype6-dev \
+	libhdf5-serial-dev \
+	libpng-dev \
+	libzmq3-dev \
+	nvinfer-runtime-trt-repo-ubuntu1804-5.0.2-ga-cuda10.0 \
+	pkg-config && \
+	apt-get update && apt-get install -y --no-install-recommends libnvinfer5=5.0.2-1+cuda10.0 && \
+rm -rf /var/lib/apt/lists/*
+
+# Install the GPU-enabled version of TensorFlow
+RUN pip3 install tensorflow-gpu==1.13.1
 
 # Install the dependencies for VirtualGL
-USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	ca-certificates \
 	curl \
@@ -41,9 +60,9 @@ RUN python3 /tmp/package.py --plugins-only
 
 # In this version, we run the image by executing the following command in the root of the `deepdrive-sim` repo:
 # ```
-# docker run --rm -ti --runtime=nvidia -v`pwd`:/deepdrive-sim -w /deepdrive-sim -v/tmp/.X11-unix:/tmp/.X11-unix:rw -e DISPLAY deepdriveio/ue4-deepdrive-deps bash
+# docker run --rm -ti --runtime=nvidia "-v$HOME/.config/Epic:/home/ue4/.config/Epic" -v`pwd`:/deepdrive-sim -w /deepdrive-sim -v/tmp/.X11-unix:/tmp/.X11-unix:rw -e DISPLAY deepdriveio/ue4-deepdrive-deps bash
 # ```
-# 
+#
 # We then build and run the Editor by executing the following commands in the container:
 # ```
 # ue4 build
