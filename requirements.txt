@@ -1,0 +1,2 @@
+ue4cli>=0.0.34
+ue4-ci-helpers>=0.0.8
