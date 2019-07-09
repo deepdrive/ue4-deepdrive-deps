@@ -58,13 +58,4 @@ USER ue4
 COPY --chown=ue4:ue4 package.py /tmp/package.py
 RUN python3 /tmp/package.py --plugins-only
 
-# In this version, we run the image by executing the following command in the root of the `deepdrive-sim` repo:
-# ```
-# docker run --rm -ti --runtime=nvidia "-v$HOME/.config/Epic:/home/ue4/.config/Epic" -v`pwd`:/deepdrive-sim -w /deepdrive-sim -v/tmp/.X11-unix:/tmp/.X11-unix:rw -e DISPLAY deepdriveio/ue4-deepdrive-deps bash
-# ```
-#
-# We then build and run the Editor by executing the following commands in the container:
-# ```
-# ue4 build
-# vglrun ue4 run
-# ```
+# View https://simdocs.deepdrive.io/v/v3/docs/setup/linux/run-in-docker for usage
