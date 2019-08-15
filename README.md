@@ -12,5 +12,5 @@ pip install -r requirements.txt
 ## Build
 
 ```
-python package.py
+docker build -t "ue4-deepdrive-deps" .
 ```
